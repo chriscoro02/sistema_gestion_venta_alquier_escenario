@@ -13,7 +13,7 @@ const API_BASE      = "https://sienna-curlew-728554.hostingersite.com/Sistema_Ev
 const URL_LOGIN     = API_BASE + "PHP/login.php";
 const URL_CHECK     = API_BASE + "PHP/check_session.php";
 // Dashboard local:
-const URL_DASHBOARD = location.origin + location.pathname.replace(/\/HTML\/.*$/, "/") + "/HTML/dashboard.html";
+const URL_DASHBOARD = location.origin + location.pathname.replace(/\/HTML\/..*$/, "/") + "HTML/dashboard.html";
 // =====================
 
 btnT?.addEventListener("click", () => {
