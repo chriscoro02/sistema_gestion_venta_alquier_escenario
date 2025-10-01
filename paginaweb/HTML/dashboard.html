@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard - Lagos Andinos SRL</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/paginaweb/CSS/style_dashboar.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h4>Administrador</h4>
+    <nav>
+      <a href="#">Panel Principal</a>
+      <a href="">Alquiler</a>
+      <a href="">Venta</a>
+      <a href="">Diseño Plano</a>
+      <a href="">Orden Produccion</a>
+      <a href="">Inventario de Estructura Modulares</a>
+      <hr>
+      <button id="btnLogout">Cerrar sesión</button>
+    </nav>
+  </aside>
+  <main class="content">
+    <div class="topbar">
+      <h3 class="m-0">Panel principal</h3>
+      <div id="usuarioBox" class="chip">Cargando…</div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title mb-2">Bienvenido</h5>
+            <p class="mb-0">Selecciona una opción del menú para continuar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="/paginaweb/JS/login.js"></script>
+  <button id="btnLogout">Cerrar sesión</button>
+
+<script type="module">
+  const API_BASE   = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/";
+  const URL_CHECK  = API_BASE + "PHP/check_session.php";
+  const URL_LOGOUT = API_BASE + "PHP/logout.php";
+  const cache = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const usuarioBox = document.getElementById("usuarioBox");
+  if (usuarioBox && (cache.nombre || cache.usuario)) {
+    usuarioBox.textContent = `${cache.nombre ?? ""} ${cache.apellido ?? ""}`.trim() || cache.usuario;
+  }
+
+  try {
+    const r = await fetch(URL_CHECK, { credentials: "include" });
+    const raw = await r.text();
+    let j;
+    try { j = JSON.parse(raw); } catch { throw new Error("Respuesta no-JSON: " + raw.slice(0,200)); }
+
+    console.log("check_session >", j, "status:", r.status); 
+
+    if (!j.ok) { location.href = "index.html"; throw new Error("no-session"); }
+    sessionStorage.setItem("user", JSON.stringify(j));
+    const nombreCompleto = `${j.nombre ?? ""} ${j.apellido ?? ""}`.trim();
+    if (usuarioBox) usuarioBox.textContent = nombreCompleto || j.usuario || "Usuario";
+
+  } catch (err) {
+    console.error("check_session error:", err);
+    location.href = "index.html";
+  }
+
+  document.getElementById("btnLogout")?.addEventListener("click", async () => {
+    try { await fetch(URL_LOGOUT, { credentials: "include" }); } catch {}
+    sessionStorage.removeItem("user");
+    location.href = "index.html";
+  });
+</script>
+
+</body>
+</html>

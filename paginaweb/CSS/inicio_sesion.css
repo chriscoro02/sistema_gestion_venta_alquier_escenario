@@ -1,0 +1,212 @@
+/* ====== Estilos de Login (adaptados para PHP Desktop) ====== */
+* { box-sizing: border-box; }
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    background: #0f172a;
+    color: #0f172a;
+}
+
+/* Contenedor de pantalla completa */
+.contenedor {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+/* Fondo con imagen y degradado */
+.fondo {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    filter: brightness(0.75);
+}
+.fondo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(1200px 1200px at 80% 20%, rgba(255,255,255,0.15), transparent 60%),
+                linear-gradient(180deg, rgba(15,23,42,0.4), rgba(15,23,42,0.85));
+}
+
+/* Caja del login */
+.login-box {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    padding: 28px 24px 22px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    animation: drop-in 400ms ease-out;
+}
+
+@keyframes drop-in {
+    from { transform: translateY(-10px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.usuario-img {
+    display: block;
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    margin: -58px auto 6px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+    padding: 8px;
+}
+
+h2 {
+    text-align: center;
+    margin: 8px 0 18px;
+    color: #0f172a;
+    letter-spacing: .3px;
+    font-weight: 700;
+}
+
+/* Inputs flotantes (funciona bien con o sin Bootstrap) */
+.form-floating {
+    position: relative;
+}
+.form-floating .form-control {
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    padding: 14px 44px 14px 14px;
+    width: 100%;
+    outline: none;
+    transition: box-shadow .2s ease, border-color .2s ease;
+}
+.form-floating .form-control:focus {
+    border-color: #334155;
+    box-shadow: 0 0 0 4px rgba(51,65,85,.12);
+}
+.form-floating label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: rgba(255,255,255,.9);
+    color: #334155;
+    padding: 0 6px;
+    font-size: 12px;
+    border-radius: 8px;
+}
+
+/* Botón para mostrar/ocultar contraseña */
+.toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    padding: 8px;
+    cursor: pointer;
+    color: #334155;
+}
+.toggle-btn:focus { outline: none; }
+
+/* Enlaces debajo del input */
+.links {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 8px 0 14px;
+}
+.links a {
+    color: #0f172a;
+    text-decoration: none;
+    font-size: 14px;
+}
+.links a:hover { text-decoration: underline; }
+
+/* Botones principales */
+.btn-ingresar, .btn-cancelar {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: transform .04s ease, filter .2s ease;
+}
+.btn-ingresar {
+    background: #0f172a;
+    color: #fff;
+}
+.btn-ingresar:hover { filter: brightness(1.08); }
+.btn-ingresar:active { transform: translateY(1px); }
+
+.btn-cancelar {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+.btn-cancelar:hover { filter: brightness(0.98); }
+.btn-cancelar:active { transform: translateY(1px); }
+
+/* Mensaje/alerta */
+.alerta {
+    background: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #fecaca;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Redes sociales */
+.wrapper {
+    margin: 14px 0 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    list-style: none;
+}
+.icon {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #f1f5f9;
+    color: #0f172a;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .2s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+.icon:hover { transform: translateY(-2px); }
+.icon .tooltip {
+    position: absolute;
+    bottom: 54px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f172a;
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+}
+.icon:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+/* Responsivo */
+@media (max-width: 430px) {
+    .login-box { margin: 0 12px; padding: 24px 18px; }
+    .usuario-img { width: 84px; height: 84px; margin-top: -48px; }
+}
