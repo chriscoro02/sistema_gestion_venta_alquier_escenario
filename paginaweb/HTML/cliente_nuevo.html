@@ -81,6 +81,16 @@
     </main>
 
     <script type="module" src="../JS/cliente_nuevo.js"></script>
+    <script>
+        const URL_LOGOUT = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/PHP/logout.php";
+        document.addEventListener('click', async (e) => {
+            if (e.target && e.target.id === 'btnLogout') {
+                try { await fetch(URL_LOGOUT, { credentials: "include" }); } catch {}
+                sessionStorage.removeItem("user");
+                window.location.href = "index.html";
+            }
+        });
+    </script>
 </body>
 
 </html>
