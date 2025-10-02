@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Cliente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/paginaweb/CSS/style_dashboar.css">
+
+<body>
+    <aside class="sidebar">
+        <h5>Producciones SA</h5>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="alquileres.html">Alquileres</a>
+            <a href="clientes.html" class="active">Clientes</a>
+            <a href="inventario.html">Inventario</a>
+            <hr>
+            <button id="btnLogout" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="m-0">Registrar Nuevo Cliente</h3>
+            <div class="d-flex gap-2">
+                <span id="usuarioBox" class="userchip">Cargando…</span>
+                <a href="clientes.html" class="btn btn-outline-secondary">← Volver a Clientes</a>
+            </div>
+        </div>
+
+        <form id="frmCliente" class="card shadow-sm">
+            <div class="card-body row g-3">
+                <div class="col-12">
+                    <h5>Datos de la Empresa</h5>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Razón Social *</label>
+                    <input required name="razon_social" class="form-control" maxlength="180">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">NIT *</label>
+                    <input required name="nit" class="form-control" maxlength="30">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tipo de Cliente</label>
+                    <input name="tipo_cliente" class="form-control" maxlength="40"
+                        placeholder="Ej: Corporativo, Particular">
+                </div>
+
+                <div class="col-12 mt-4">
+                    <h5>Datos del Contacto</h5>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nombre del Contacto *</label>
+                    <input required name="nombre" class="form-control" maxlength="100">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Apellido del Contacto *</label>
+                    <input required name="apellido" class="form-control" maxlength="100">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">CI del Contacto *</label>
+                    <input required name="ci" class="form-control" maxlength="30">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Teléfono del Contacto</label>
+                    <input name="telefono" class="form-control" maxlength="50">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" name="fecha_nacimiento" class="form-control">
+                </div>
+                <div class="col-12 mt-4">
+                    <div id="msg" class="alert d-none"></div>
+                    <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script type="module" src="../JS/cliente_nuevo.js"></script>
+    <script>
+        const URL_LOGOUT = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/PHP/logout.php";
+        document.addEventListener('click', async (e) => {
+            if (e.target && e.target.id === 'btnLogout') {
+                try { await fetch(URL_LOGOUT, { credentials: "include" }); } catch {}
+                sessionStorage.removeItem("user");
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Clientes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/paginaweb/CSS/style_dashboar.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h5>Producciones SA</h5>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="alquileres.html">Alquileres</a>
+            <a href="clientes.html" class="active">Clientes</a>
+            <a href="inventario.html">Inventario</a>
+            <hr>
+            <button id="btnLogout" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="m-0">Gestión de Clientes</h3>
+            <div class="d-flex gap-2">
+                <span id="usuarioBox" class="userchip">Cargando…</span>
+                <a href="cliente_nuevo.html" class="btn btn-primary">+ Nuevo Cliente</a>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre del Cliente</th>
+                                <th>NIT</th>
+                                <th>Teléfono</th>
+                                <th>Tipo de Cliente</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyClientes">
+                            <tr><td colspan="7" class="text-center text-muted py-4">Cargando…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="../JS/clientes.js"></script>
+    <script>
+        const URL_LOGOUT = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/PHP/logout.php";
+        document.addEventListener('click', async (e) => {
+            if (e.target && e.target.id === 'btnLogout') {
+                try { await fetch(URL_LOGOUT, { credentials: "include" }); } catch {}
+                sessionStorage.removeItem("user");
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+</body>
+</html>
