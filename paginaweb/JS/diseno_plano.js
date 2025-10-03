@@ -76,7 +76,6 @@ async function cargarTabla(){
         <td>${badgeEstado(x.estado)}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-outline-secondary" data-act="edit" data-id="${x.id_plano_tecnico}">Editar</button>
-          <button class="btn btn-sm btn-outline-warning" data-act="toggle" data-id="${x.id_plano_tecnico}">Estado</button>
         </td>
       </tr>`).join("");
     tblBody.innerHTML = rows || `<tr><td colspan="9">Sin resultados</td></tr>`;
