@@ -50,6 +50,19 @@ form?.addEventListener('submit', async (e) => {
         setTimeout(() => {
             window.location.href = 'clientes.html';
         }, 1500);
+        
+    nitInput?.addEventListener('input', () => {
+        // Tomamos el valor actual del campo
+        const valorActual = nitInput.value;
+        
+        // Usamos una expresión regular para eliminar cualquier cosa que NO sea un número
+        const soloNumeros = valorActual.replace(/[^0-9]/g, '');
+        
+        // Si el valor cambia (porque se eliminó un carácter inválido), lo actualizamos
+        if (valorActual !== soloNumeros) {
+            nitInput.value = soloNumeros;
+        }
+    });
 
     } catch (error) {
         showMsg('danger', 'Ocurrió un error de conexión. Intente de nuevo.');

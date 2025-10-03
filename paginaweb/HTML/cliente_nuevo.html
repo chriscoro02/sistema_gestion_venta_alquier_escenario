@@ -38,16 +38,15 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Razón Social *</label>
-                    <input required name="razon_social" class="form-control" maxlength="180">
+                    <input name="razon_social" class="form-control" maxlength="180" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">NIT *</label>
-                    <input required name="nit" class="form-control" maxlength="30">
+                    <input name="nit" id="nitInput" class="form-control" maxlength="30" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Tipo de Cliente</label>
-                    <input name="tipo_cliente" class="form-control" maxlength="40"
-                        placeholder="Ej: Corporativo, Particular">
+                    <input name="tipo_cliente" class="form-control" maxlength="40" placeholder="Ej: Corporativo, Particular">
                 </div>
 
                 <div class="col-12 mt-4">
@@ -55,25 +54,25 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Nombre del Contacto *</label>
-                    <input required name="nombre" class="form-control" maxlength="100">
+                    <input name="nombre" class="form-control" maxlength="100" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Apellido del Contacto *</label>
-                    <input required name="apellido" class="form-control" maxlength="100">
+                    <input name="apellido" class="form-control" maxlength="100" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">CI del Contacto *</label>
-                    <input required name="ci" class="form-control" maxlength="30">
+                    <input name="ci" class="form-control" maxlength="30" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Teléfono del Contacto</label>
                     <input name="telefono" class="form-control" maxlength="50">
                 </div>
-
                 <div class="col-md-6">
                     <label class="form-label">Fecha de Nacimiento</label>
                     <input type="date" name="fecha_nacimiento" class="form-control">
                 </div>
+
                 <div class="col-12 mt-4">
                     <div id="msg" class="alert d-none"></div>
                     <button type="submit" class="btn btn-primary">Guardar Cliente</button>
