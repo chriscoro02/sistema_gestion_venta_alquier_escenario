@@ -1,4 +1,4 @@
-// ====== Igual que login.js: base y endpoints en Hostinger ======
+// ====== Igual que login.js: base y endpoints en Hostinger. ======
 const $ = (s) => document.querySelector(s);
 
 const API_BASE   = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/";
