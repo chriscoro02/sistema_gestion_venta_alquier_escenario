@@ -1,7 +1,8 @@
 // JS/pagos.js
 const API_BASE = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/";
 const URL_PAGOS_LIST = API_BASE + "PHP/pagos_list.php";
-const URL_ALQUILER_ACTIONS = API_BASE + "PHP/alquiler.php"; // Este backend manejará todas las acciones
+const URL_ALQUILER_ACTIONS = API_BASE + "PHP/alquiler.php";
+const URL_VENTA_ACTIONS = API_BASE + "PHP/venta.php"; // URL para acciones de venta
 const URL_CHECK = API_BASE + "PHP/check_session.php";
 
 const tbody = document.getElementById('tbodyPagos');
@@ -33,25 +34,25 @@ async function loadPagosPendientes() {
 
         if (!result.ok) throw new Error(result.msg || "No se pudo cargar la lista");
         if (result.data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-success">¡No hay pagos pendientes! ✨</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-success py-4">¡No hay pagos pendientes! ✨</td></tr>`;
             return;
         }
 
         const ahora = new Date();
         tbody.innerHTML = result.data.map(pago => {
             const fechaTransaccion = new Date(pago.fecha);
-            let claseFila = 'table-success';
+            let claseFila = 'table-light'; // Clase por defecto para pendientes
             let estadoTexto = "Pendiente";
 
-            if (fechaTransaccion < ahora) {
-                claseFila = 'table-danger';
+            if (fechaTransaccion < ahora && pago.estado_pago !== 'pagado') {
+                claseFila = 'table-danger'; // Vencido
                 estadoTexto = "VENCIDO";
             }
             
             const tipoBadge = `<span class="badge ${pago.tipo_transaccion === 'Venta' ? 'bg-info text-dark' : 'bg-primary'}">${pago.tipo_transaccion}</span>`;
             
             const anularBoton = pago.tipo_transaccion === 'Alquiler' 
-                ? `<button class="btn btn-sm btn-danger ms-1" data-id="${pago.id_transaccion}" data-act="anular">Anular</button>` 
+                ? `<button class="btn btn-sm btn-outline-danger ms-1" data-id="${pago.id_transaccion}" data-tipo="${pago.tipo_transaccion}" data-act="anular">Anular</button>` 
                 : '';
 
             return `
@@ -60,10 +61,10 @@ async function loadPagosPendientes() {
                     <td>${tipoBadge}</td>
                     <td>${pago.razon_social}</td>
                     <td>${fechaTransaccion.toLocaleString('es-ES')}</td>
-                    <td>${parseFloat(pago.total).toFixed(2)}</td>
-                    <td><strong>${parseFloat(pago.saldo_pendiente).toFixed(2)}</strong></td>
+                    <td class="text-end">${parseFloat(pago.total).toFixed(2)}</td>
+                    <td class="text-end"><strong>${parseFloat(pago.saldo_pendiente).toFixed(2)}</strong></td>
                     <td><strong>${estadoTexto}</strong></td>
-                    <td class="text-nowrap">
+                    <td class="text-nowrap text-end">
                         <button class="btn btn-sm btn-success" 
                                 data-id="${pago.id_transaccion}" 
                                 data-saldo="${pago.saldo_pendiente}"
@@ -98,6 +99,7 @@ tbody.addEventListener('click', async (e) => {
         document.getElementById('pagoClienteNombre').textContent = nombreCliente;
         document.getElementById('pagoDeudaSaldo').textContent = `Saldo Pendiente: Bs. ${saldoDeuda}`;
         document.getElementById('pagoMonto').value = saldoDeuda;
+        pagoMsg.classList.add('d-none'); // Ocultar mensajes de error previos
         
         pagoModal.show();
     }
@@ -136,18 +138,31 @@ btnConfirmarPago.addEventListener('click', async () => {
     btnConfirmarPago.disabled = true;
     pagoMsg.classList.add('d-none');
 
+    let urlEndpoint = '';
+    let payload = {
+        action: 'pagar',
+        monto: monto
+    };
+
+    if (tipoTransaccion === 'Alquiler') {
+        urlEndpoint = URL_ALQUILER_ACTIONS;
+        payload.id_alquiler = idTransaccion;
+    } else if (tipoTransaccion === 'Venta') {
+        urlEndpoint = URL_VENTA_ACTIONS;
+        payload.id_venta = idTransaccion;
+    } else {
+        pagoMsg.textContent = 'Error: Tipo de transacción desconocido.';
+        pagoMsg.className = 'alert alert-danger';
+        btnConfirmarPago.disabled = false;
+        return;
+    }
+
     try {
-        // La acción siempre es 'pagar', pero ahora enviamos el tipo para que el PHP sepa qué hacer
-        const response = await fetch(URL_ALQUILER_ACTIONS, {
+        const response = await fetch(urlEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({
-                action: 'pagar',
-                tipo: tipoTransaccion,
-                id_transaccion: idTransaccion,
-                monto: monto
-            })
+            body: JSON.stringify(payload)
         });
         const result = await response.json();
         if (!result.ok) throw new Error(result.msg);
@@ -163,6 +178,7 @@ btnConfirmarPago.addEventListener('click', async () => {
         btnConfirmarPago.disabled = false;
     }
 });
+
 
 (async () => {
     await requireSession();

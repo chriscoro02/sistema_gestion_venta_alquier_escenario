@@ -241,6 +241,7 @@ $("#btnGuardar")?.addEventListener("click", async ()=>{
     });
     const raw = await res.text(); let j; try{ j=JSON.parse(raw);}catch{ throw new Error("Respuesta no-JSON: "+raw.slice(0,200)); }
     if (!j.ok) throw new Error(j.msg||"No se pudo crear la venta.");
+    alert('¡Venta registrada con éxito!');
     bootstrap.Modal.getInstance(document.getElementById("modalVenta")).hide();
     await cargarTabla();
   }catch(e){ alert("Error: " + (e?.message||e)); }
