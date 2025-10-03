@@ -22,7 +22,7 @@ function renderizarAcciones(estructura) {
     switch (estructura.estado) {
         case 'disponible':
             // Este botón ahora apunta correctamente a 'alquiler_nuevo.html'
-            return `<a href="alquileres.html" class="btn btn-sm btn-success">Alquilar</a>`;
+            return `<a href="alquiler.html" class="btn btn-sm btn-success">Alquilar</a>`;
         case 'alquilado':
             return `<span class="badge bg-warning text-dark">Alquilado</span>`;
         case 'mantenimiento':
