@@ -79,6 +79,16 @@ async function cargarTabla(){
 filtroTexto?.addEventListener("input", debounce(cargarTabla, 400));
 filtroEstado?.addEventListener("change", cargarTabla);
 
+// ===== generador local para Nº de venta =====
+function generarNumeroVenta(){
+  const d = new Date();
+  const y = String(d.getFullYear()).slice(-2);
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const dd= String(d.getDate()).padStart(2,"0");
+  const rand = Math.floor(Math.random()*1000).toString().padStart(3,"0");
+  return `FV-${y}${m}${dd}-${rand}`;
+}
+
 // Modal nueva venta
 const modal = new bootstrap.Modal(document.getElementById("modalVenta"));
 $("#btnNuevo")?.addEventListener("click", ()=>{
@@ -88,6 +98,14 @@ $("#btnNuevo")?.addEventListener("click", ()=>{
   $("#descuento").value = "0.00";
   $("#precio_venta").value = "";
   $("#total").value = "0.00";
+
+  // >>> añadido: autogenerar número si está vacío
+  const campoNum = $("#numero_venta");
+  if (campoNum && !campoNum.value.trim()) {
+    campoNum.value = generarNumeroVenta();
+  }
+  // <<<
+
   modal.show();
 });
 
