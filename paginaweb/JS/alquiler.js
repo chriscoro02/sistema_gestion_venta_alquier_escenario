@@ -93,8 +93,11 @@ async function cargarTabla(){
         <td>${est}</td>
         <td>${pag}</td>
         <td class="text-nowrap">
-          <button class="btn btn-sm btn-outline-success" data-id="${x.id_alquiler}" data-act="pagar">Pagar</button>
-          <button class="btn btn-sm btn-outline-primary" data-id="${x.id_alquiler}" data-act="devolver">Devolver</button>
+          <button class="btn btn-sm btn-outline-success" 
+        onclick="window.location.href='pagos.html'">
+    Pagar
+</button>
+          
         </td>
       </tr>`;
     }).join("");
