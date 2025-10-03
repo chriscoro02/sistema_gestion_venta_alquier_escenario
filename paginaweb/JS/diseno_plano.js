@@ -8,15 +8,14 @@ const URL_GET    = API_BASE + "PHP/plano_obtener.php?id=";          // +id
 const URL_SAVE   = API_BASE + "PHP/plano_guardar.php";
 const URL_TOGGLE = API_BASE + "PHP/plano_cambiar_estado.php";
 const URL_CAT_TP = API_BASE + "PHP/catalogo_tipos_estructura.php";
-const URL_CAT_ING= API_BASE + "PHP/catalogo_ingenieros.php";        // NUEVO
+const URL_CAT_ING= API_BASE + "PHP/catalogo_ingenieros.php";
 
 // ===== Helper: fetch con parse seguro =====
 async function fetchJSON(url, options) {
   const r = await fetch(url, { credentials: "include", ...options });
   const txt = await r.text();
-  try {
-    return JSON.parse(txt);
-  } catch (e) {
+  try { return JSON.parse(txt); }
+  catch (e) {
     console.error("[fetchJSON] Respuesta NO-JSON desde", url, "=>\n", txt);
     throw e;
   }
@@ -49,6 +48,9 @@ const filtroEstado= document.getElementById("filtroEstado");
 filtroTexto.addEventListener("input", debounce(cargarTabla, 400));
 filtroEstado.addEventListener("change", cargarTabla);
 
+// NUEVO: almacenamos los códigos actuales para calcular el siguiente
+let _codigosActuales = [];
+
 async function cargarTabla(){
   tblBody.innerHTML = `<tr><td colspan="9">Cargando…</td></tr>`;
   const p = new URLSearchParams();
@@ -58,6 +60,10 @@ async function cargarTabla(){
   try{
     const j = await fetchJSON(URL_LIST + "?" + p.toString());
     if(!j.ok) throw new Error(j.msg || 'Error al listar planos');
+
+    // Guardamos la lista de códigos para el autogenerador
+    _codigosActuales = (j.data || []).map(x => String(x.codigo_plano_tecnico || ""));
+
     const rows = (j.data||[]).map((x,i)=> `
       <tr>
         <td>${i+1}</td>
@@ -112,13 +118,27 @@ async function cargarIngenieros(){
   try {
     const j = await fetchJSON(URL_CAT_ING);
     if (!j.ok) throw new Error(j.msg || 'Error catálogo ingenieros');
-    // Mostramos algo entendible: numero_licencia + especialidad
     selIng.innerHTML = `<option value="">(opcional) Seleccione…</option>` + (j.data||[])
       .map(i=>`<option value="${i.id_ingeniero}">${esc(i.mostrar)}</option>`).join("");
   } catch (e) {
     console.error("catalogo_ingenieros ERROR:", e);
     selIng.innerHTML = `<option value="">(error cargando ingenieros)</option>`;
   }
+}
+
+// ===== UTILIDAD: generar siguiente código global PL-### (sin servidor) =====
+function siguienteCodigoGlobal() {
+  // Buscamos el mayor número al final del código (sea "PL-ESC-007" o "PL-007")
+  let max = 0;
+  for (const c of _codigosActuales) {
+    const m = String(c).match(/(\d{3,})$/); // últimos dígitos
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (!Number.isNaN(n)) max = Math.max(max, n);
+    }
+  }
+  const next = (max + 1).toString().padStart(3, "0");
+  return `PL-${next}`;
 }
 
 // ===== Modal / CRUD =====
@@ -128,6 +148,15 @@ document.getElementById("btnNuevo").addEventListener("click", ()=>{
   document.getElementById("id_plano_tecnico").value = "";
   document.getElementById("estado").value = "ACTIVO";
   document.querySelector("#modalPlano .modal-title").textContent = "Nuevo plano";
+
+  // Asegurar que el campo sea editable
+  const inputCodigo = document.getElementById("codigo_plano_tecnico");
+  inputCodigo.removeAttribute('readonly');
+  inputCodigo.removeAttribute('disabled');
+
+  // Proponer código automático (global PL-###)
+  inputCodigo.value = siguienteCodigoGlobal();
+
   modal.show();
 });
 
