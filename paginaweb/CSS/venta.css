@@ -1,0 +1,7 @@
+.form-mini .form-control, .form-mini .form-select { height: 38px; padding: .3rem .5rem; }
+.table thead th { white-space: nowrap; }
+.money { text-align: right; font-variant-numeric: tabular-nums; }
+.chip { background:#e2e8f0; color:#0f172a; padding:6px 10px; border-radius:999px; }
+.scroll-y { max-height: 260px; overflow-y: auto; }
+#tblVenta td.text-end { text-align:right; }
+#tblVenta code { user-select: all; }
