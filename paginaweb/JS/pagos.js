@@ -1,8 +1,12 @@
-// JS/pagos.js
+//pagos.js
 const API_BASE = "https://sienna-curlew-728554.hostingersite.com/Sistema_Eventos/";
+
 const URL_PAGOS_LIST = API_BASE + "PHP/pagos_list.php";
+
+const URL_VENTA_ACTIONS = API_BASE + "PHP/venta.php";
+
 const URL_ALQUILER_ACTIONS = API_BASE + "PHP/alquiler.php";
-const URL_VENTA_ACTIONS = API_BASE + "PHP/venta.php"; // URL para acciones de venta
+
 const URL_CHECK = API_BASE + "PHP/check_session.php";
 
 const tbody = document.getElementById('tbodyPagos');
@@ -34,26 +38,38 @@ async function loadPagosPendientes() {
 
         if (!result.ok) throw new Error(result.msg || "No se pudo cargar la lista");
         if (result.data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-success py-4">¡No hay pagos pendientes! ✨</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-success">¡No hay pagos pendientes! ✨</td></tr>`;
             return;
         }
 
         const ahora = new Date();
         tbody.innerHTML = result.data.map(pago => {
             const fechaTransaccion = new Date(pago.fecha);
-            let claseFila = 'table-light'; // Clase por defecto para pendientes
-            let estadoTexto = "Pendiente";
+            let claseFila = 'table-success', estadoTexto = 'Pendiente';
 
-            if (fechaTransaccion < ahora && pago.estado_pago !== 'pagado') {
-                claseFila = 'table-danger'; // Vencido
-                estadoTexto = "VENCIDO";
+            if (fechaTransaccion < ahora) {
+                claseFila = 'table-danger'; estadoTexto = "VENCIDO";
+            } else if ((fechaTransaccion - ahora) / (1000 * 3600 * 24) <= 3) {
+                claseFila = 'table-warning'; estadoTexto = "Próximo a Vencer";
             }
             
             const tipoBadge = `<span class="badge ${pago.tipo_transaccion === 'Venta' ? 'bg-info text-dark' : 'bg-primary'}">${pago.tipo_transaccion}</span>`;
             
+            // ===== CORRECCIÓN AQUÍ: Se añade data-tipo al botón de anular =====
             const anularBoton = pago.tipo_transaccion === 'Alquiler' 
-                ? `<button class="btn btn-sm btn-outline-danger ms-1" data-id="${pago.id_transaccion}" data-tipo="${pago.tipo_transaccion}" data-act="anular">Anular</button>` 
+                ? `<button class="btn btn-sm btn-danger ms-1" data-id="${pago.id_transaccion}" data-tipo="${pago.tipo_transaccion}" data-act="anular">Anular</button>` 
                 : '';
+            // ====================================================================
+            
+            const pagoVencido = fechaTransaccion < ahora;
+            const pagarBoton = pagoVencido
+                ? `<button class="btn btn-sm btn-success" disabled title="No se puede pagar un alquiler vencido">Registrar Pago</button>`
+                : `<button class="btn btn-sm btn-success" 
+                            data-id="${pago.id_transaccion}" 
+                            data-saldo="${pago.saldo_pendiente}"
+                            data-cliente="${pago.razon_social}"
+                            data-tipo="${pago.tipo_transaccion}"
+                            data-act="pagar">Registrar Pago</button>`;
 
             return `
                 <tr class="${claseFila}">
@@ -61,22 +77,16 @@ async function loadPagosPendientes() {
                     <td>${tipoBadge}</td>
                     <td>${pago.razon_social}</td>
                     <td>${fechaTransaccion.toLocaleString('es-ES')}</td>
-                    <td class="text-end">${parseFloat(pago.total).toFixed(2)}</td>
-                    <td class="text-end"><strong>${parseFloat(pago.saldo_pendiente).toFixed(2)}</strong></td>
+                    <td>${parseFloat(pago.total).toFixed(2)}</td>
+                    <td><strong>${parseFloat(pago.saldo_pendiente).toFixed(2)}</strong></td>
                     <td><strong>${estadoTexto}</strong></td>
-                    <td class="text-nowrap text-end">
-                        <button class="btn btn-sm btn-success" 
-                                data-id="${pago.id_transaccion}" 
-                                data-saldo="${pago.saldo_pendiente}"
-                                data-cliente="${pago.razon_social}"
-                                data-tipo="${pago.tipo_transaccion}"
-                                data-act="pagar">Registrar Pago</button>
+                    <td class="text-nowrap">
+                        ${pagarBoton}
                         ${anularBoton}
                     </td>
                 </tr>
             `;
         }).join('');
-
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">${error.message}</td></tr>`;
     }
@@ -87,7 +97,7 @@ tbody.addEventListener('click', async (e) => {
     if (!boton) return;
 
     const idTransaccion = boton.dataset.id;
-    const tipoTransaccion = boton.dataset.tipo;
+    const tipoTransaccion = boton.dataset.tipo; // Ahora esto funcionará para ambos botones
     const accion = boton.dataset.act;
 
     if (accion === 'pagar') {
@@ -99,7 +109,6 @@ tbody.addEventListener('click', async (e) => {
         document.getElementById('pagoClienteNombre').textContent = nombreCliente;
         document.getElementById('pagoDeudaSaldo').textContent = `Saldo Pendiente: Bs. ${saldoDeuda}`;
         document.getElementById('pagoMonto').value = saldoDeuda;
-        pagoMsg.classList.add('d-none'); // Ocultar mensajes de error previos
         
         pagoModal.show();
     }
