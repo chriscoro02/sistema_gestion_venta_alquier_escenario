@@ -65,7 +65,7 @@ async function cargarTabla(){
         <td>${escapeHtml(x.metodo_pago ?? "")}</td>
         <td>${badge}</td>
         <td class="text-nowrap">
-          <button class="btn btn-sm btn-outline-success" data-id="${x.id_venta}" data-act="pagar">Pagar</button>
+          <button class="btn btn-sm btn-outline-success" onclick="location.href='pagos.html'">Pagar</button>
           <button class="btn btn-sm btn-outline-danger" data-id="${x.id_venta}" data-act="anular">Anular</button>
         </td>
       </tr>`;
