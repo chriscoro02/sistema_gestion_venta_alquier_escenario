@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -8,20 +9,21 @@
   <link rel="stylesheet" href="/paginaweb/CSS/style_dashboar.css">
   <link rel="stylesheet" href="/paginaweb/CSS/alquiler.css">
 </head>
+
 <body>
   <aside class="sidebar">
     <h4>Administrador</h4>
-     <nav>
-            <a href="dashboard.html"class="active">Panel Principal</a>
-            <a href="alquiler.html" >Alquiler</a>
-            <a href="venta.html">Venta</a>
-            <a href="diseno_plano.html">Orden de estructura</a>
-            <a href="clientes.html">Registro Clientes</a>
-            <a href="inventario.html">Inventario de Estructuras</a>
-            <a href="pagos.html">Gestión de Pagos</a>
-            <hr>
-            <button id="btnLogout">Cerrar sesión</button>
-        </nav>
+    <nav>
+      <a href="dashboard.html">Panel Principal</a>
+      <a href="alquiler.html" class="active">Gestion de Alquiler</a>
+      <a href="venta.html">Gestion de Venta</a>
+      <a href="diseno_plano.html">Orden de estructura</a>
+      <a href="clientes.html">Registro Clientes</a>
+      <a href="inventario.html">Inventario de Estructuras</a>
+      <a href="pagos.html">Gestión de Pagos</a>
+      <hr>
+      <button id="btnLogout">Cerrar sesión</button>
+    </nav>
   </aside>
 
   <main class="content">
@@ -107,7 +109,6 @@
               <div class="col-md-6">
                 <label class="form-label">Estructura (disponibles)</label>
                 <select id="id_estructura_modular" name="id_estructura_modular" class="form-select" required></select>
-                <div class="form-text">Usa su <code>id_plano_tecnico</code> para precio tridiario.</div>
               </div>
 
               <div class="col-md-4">
@@ -129,11 +130,13 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label">Subtotal servicios (Bs.)</label>
-                <input id="subtotal_serv" class="form-control money" type="number" step="0.01" min="0" value="0.00" readonly>
+                <input id="subtotal_serv" class="form-control money" type="number" step="0.01" min="0" value="0.00"
+                  readonly>
               </div>
               <div class="col-md-4">
                 <label class="form-label">Total (Bs.)</label>
-                <input id="total" class="form-control money fw-bold" type="number" step="0.01" min="0" value="0.00" readonly>
+                <input id="total" class="form-control money fw-bold" type="number" step="0.01" min="0" value="0.00"
+                  readonly>
               </div>
             </div>
 
@@ -187,4 +190,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </body>
+
 </html>
